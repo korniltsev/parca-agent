@@ -13,21 +13,12 @@
 
 package bpfprograms
 
-import (
-	"embed"
-	"fmt"
-	"io"
-	"runtime"
-)
-
 const (
 	StackDepth       = 127 // Always needs to be sync with MAX_STACK_DEPTH in BPF program.
 	tripleStackDepth = StackDepth * 3
 )
 
 var (
-	//go:embed objects/*
-	objects embed.FS
 
 	// native programs.
 	NativeProgramFD           = uint64(0)
@@ -43,32 +34,3 @@ var (
 )
 
 type CombinedStack [tripleStackDepth]uint64
-
-func OpenNative() ([]byte, error) {
-	return open(fmt.Sprintf("objects/%s/native.bpf.o", runtime.GOARCH))
-}
-
-func OpenRuby() ([]byte, error) {
-	return open(fmt.Sprintf("objects/%s/rbperf.bpf.o", runtime.GOARCH))
-}
-
-func OpenPython() ([]byte, error) {
-	return open(fmt.Sprintf("objects/%s/pyperf.bpf.o", runtime.GOARCH))
-}
-
-func open(file string) ([]byte, error) {
-	f, err := objects.Open(file)
-	if err != nil {
-		return nil, fmt.Errorf("failed to open BPF object: %w", err)
-	}
-
-	// Note: no need to close this file, it's a virtual file from embed.FS, for
-	// which Close is a no-op.
-
-	bpfObj, err := io.ReadAll(f)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read BPF object: %w", err)
-	}
-
-	return bpfObj, nil
-}

@@ -38,12 +38,12 @@ typedef unsigned long int pthread_t;
 typedef struct {
   InterpreterInfo interpreter_info;
 
-  void *thread_state;
+  u64 thread_state;
   pthread_t current_pthread;
 
   // TODO: Unify naming with Ruby and CPU unwinders.
   // u64 base_stack;
-  void *frame_ptr;
+  u64 frame_ptr;
   int stack_walker_prog_call_count;
 
   Sample sample;

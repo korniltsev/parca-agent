@@ -15,13 +15,6 @@
 package bpfmetrics
 
 import (
-	"bytes"
-	"encoding/binary"
-	"fmt"
-	"strconv"
-	"unsafe"
-
-	libbpf "github.com/aquasecurity/libbpfgo"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
@@ -63,15 +56,13 @@ type bpfMetrics struct {
 
 type Collector struct {
 	logger             log.Logger
-	m                  *libbpf.Module
 	perCPUStatsMapName string
 	pid                int
 }
 
-func NewCollector(logger log.Logger, m *libbpf.Module, perCPUStatsMapName string, pid int) *Collector {
+func NewCollector(logger log.Logger, perCPUStatsMapName string, pid int) *Collector {
 	return &Collector{
 		logger:             logger,
-		m:                  m,
 		perCPUStatsMapName: perCPUStatsMapName,
 		pid:                pid,
 	}
@@ -195,109 +186,14 @@ func (c *Collector) collectUnwinderStatistics(ch chan<- prometheus.Metric) {
 }
 
 func (c *Collector) getBPFMetrics() []*bpfMetrics {
-	var bpfMapsNames []string
 	//nolint: prealloc
 	var bpfMetricArray []*bpfMetrics
 
-	it := c.m.Iterator()
-
-	for {
-		mapBpf := it.NextMap()
-		if mapBpf != nil {
-			bpfMapsNames = append(bpfMapsNames, mapBpf.Name())
-		} else {
-			break
-		}
-	}
-
-	for _, mapName := range bpfMapsNames {
-		bpfMap, err := c.m.GetMap(mapName)
-		if err != nil {
-			level.Debug(c.logger).Log("msg", "error fetching bpf map", "err", err)
-			continue
-		}
-
-		bpfMaxEntry := float64(bpfMap.MaxEntries())
-		bpfMapKeySize := float64(bpfMap.KeySize())
-		bpfMapValueSize := float64(bpfMap.ValueSize())
-		bpfMapFd := strconv.Itoa(bpfMap.FileDescriptor())
-
-		path := fmt.Sprintf("/proc/%d/fdinfo/", c.pid) + bpfMapFd
-		data, err := readFileNoStat(path)
-		if err != nil {
-			level.Debug(c.logger).Log("msg", "Unable to read fds for agent process", "agent_pid", c.pid, "err", err)
-		}
-
-		bpfMemlock, err := FdInfoMemlock(c.logger, data)
-		if err != nil {
-			level.Debug(c.logger).Log("msg", "error getting memory locked for file descriptor", "err", err)
-		}
-
-		bpfMetricArray = append(bpfMetricArray,
-			&bpfMetrics{
-				mapName:         mapName,
-				bpfMapKeySize:   bpfMapKeySize,
-				bpfMapValueSize: bpfMapValueSize,
-				bpfMaxEntry:     bpfMaxEntry,
-				bpfMemlock:      float64(bpfMemlock),
-			},
-		)
-	}
 	return bpfMetricArray
 }
 
 // readPerCpuCounter reads the value of the given key from the per CPU stats map.
 func (c *Collector) readCounters() (unwinderStats, error) {
-	numCpus, err := libbpf.NumPossibleCPUs()
-	if err != nil {
-		return unwinderStats{}, fmt.Errorf("NumPossibleCPUs failed: %w", err)
-	}
-	sizeOfUnwinderStats := int(unsafe.Sizeof(unwinderStats{}))
-
-	statsMap, err := c.m.GetMap(c.perCPUStatsMapName)
-	if err != nil {
-		return unwinderStats{}, err
-	}
-
-	valuesBytes := make([]byte, sizeOfUnwinderStats*numCpus)
-	key := uint32(0)
-	if err := statsMap.GetValueReadInto(unsafe.Pointer(&key), &valuesBytes); err != nil { // nolint:staticcheck
-		return unwinderStats{}, fmt.Errorf("get count values: %w", err)
-	}
-
 	total := unwinderStats{}
-
-	for i := 0; i < numCpus; i++ {
-		partial := unwinderStats{}
-		cpuStats := valuesBytes[i*sizeOfUnwinderStats : i*sizeOfUnwinderStats+sizeOfUnwinderStats]
-		err := binary.Read(bytes.NewBuffer(cpuStats), binary.LittleEndian, &partial)
-		if err != nil {
-			level.Error(c.logger).Log("msg", "error reading unwinder stats ", "err", err)
-		}
-
-		total.TotalRuns += partial.TotalRuns
-		total.TotalSamples += partial.TotalSamples
-		total.SuccessDWARF += partial.SuccessDWARF
-		total.ErrorTruncated += partial.ErrorTruncated
-		total.ErrorUnsupportedExpression += partial.ErrorUnsupportedExpression
-		total.ErrorFramePointerAction += partial.ErrorFramePointerAction
-		total.ErrorUnsupportedCfaRegister += partial.ErrorUnsupportedCfaRegister
-		total.ErrorCatchall += partial.ErrorCatchall
-		total.ErrorShouldNeverHappen += partial.ErrorShouldNeverHappen
-		total.ErrorPcNotCovered += partial.ErrorPcNotCovered
-		total.ErrorPcNotCoveredJIT += partial.ErrorPcNotCoveredJIT
-		total.ErrorJITUnupdatedMapping += partial.ErrorJITUnupdatedMapping
-		total.ErrorJITMixedModeDisabled += partial.ErrorJITMixedModeDisabled
-		total.SuccessJITFrame += partial.SuccessJITFrame
-		total.SuccessJITToDWARF += partial.SuccessJITToDWARF
-		total.SuccessDWARFToJIT += partial.SuccessDWARFToJIT
-		total.SuccessDWARFReachBottom += partial.SuccessDWARFReachBottom
-		total.SuccessJITReachBottom += partial.SuccessJITReachBottom
-
-		total.EventRequestUnwindInformation += partial.EventRequestUnwindInformation
-		total.EventRequestProcessMappings += partial.EventRequestProcessMappings
-		total.EventRequestRefreshProcessInfo += partial.EventRequestRefreshProcessInfo
-	}
-
 	return total, nil
 }

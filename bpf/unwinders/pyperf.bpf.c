@@ -179,7 +179,7 @@ int unwind_python_stack(struct bpf_perf_event_data *ctx) {
   // Fetch the thread id.
   LOG("offsets->py_thread_state.thread_id %d", offsets->py_thread_state.thread_id);
   pthread_t pthread_id;
-  bpf_probe_read_user(&pthread_id, sizeof(pthread_id), state->thread_state + offsets->py_thread_state.thread_id);
+  bpf_probe_read_user(&pthread_id, sizeof(pthread_id), ((void *)(state->thread_state)) + offsets->py_thread_state.thread_id);
   LOG("pthread_id %lu", pthread_id);
   // 0x10 = offsetof(tcbhead_t, self) for glibc x86.
   // pthread_t current_pthread_id;
@@ -196,7 +196,7 @@ int unwind_python_stack(struct bpf_perf_event_data *ctx) {
 
   if (offsets->py_thread_state.frame > -1) {
     LOG("offsets->py_thread_state.frame %d", offsets->py_thread_state.frame);
-    bpf_probe_read_user(&state->frame_ptr, sizeof(void *), state->thread_state + offsets->py_thread_state.frame);
+    bpf_probe_read_user(&state->frame_ptr, sizeof(void *), ((void*)(state->thread_state)) + offsets->py_thread_state.frame);
   } else {
     LOG("offsets->py_thread_state.cframe %d", offsets->py_thread_state.cframe);
     void *cframe;
@@ -294,14 +294,14 @@ int walk_python_stack(struct bpf_perf_event_data *ctx) {
   int frame_count = 0;
 #pragma unroll
   for (int i = 0; i < PYTHON_STACK_FRAMES_PER_PROG; i++) {
-    void *cur_frame = state->frame_ptr;
+    void *cur_frame = (void*)(state->frame_ptr);
     if (!cur_frame) {
       break;
     }
 
     // Read the code pointer. PyFrameObject.f_code
     void *cur_code_ptr;
-    bpf_probe_read_user(&cur_code_ptr, sizeof(cur_code_ptr), state->frame_ptr + offsets->py_frame_object.f_code);
+    bpf_probe_read_user(&cur_code_ptr, sizeof(cur_code_ptr), ((void *)(state->frame_ptr)) + offsets->py_frame_object.f_code);
     if (!cur_code_ptr) {
       LOG("[error] bpf_probe_read_user failed");
       break;

@@ -1,19 +1,15 @@
 module github.com/parca-dev/parca-agent
 
-go 1.21.6
+go 1.20
 
 require (
 	buf.build/gen/go/prometheus/prometheus/protocolbuffers/go v1.32.0-20240125203449-c3402bbea49b.1
 	github.com/Masterminds/semver/v3 v3.2.1
 	github.com/RoaringBitmap/roaring v1.9.0
 	github.com/alecthomas/kong v0.8.1
-	github.com/aquasecurity/libbpfgo v0.6.0-libbpf-1.3
-	github.com/aquasecurity/libbpfgo/helpers v0.4.5
-	github.com/armon/circbuf v0.0.0-20190214190532-5111143e8da2
 	github.com/cenkalti/backoff/v4 v4.2.1
 	github.com/cespare/xxhash/v2 v2.2.0
 	github.com/cilium/ebpf v0.12.3
-	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/docker/docker v24.0.9+incompatible
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fsnotify/fsnotify v1.7.0
@@ -26,11 +22,8 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.1
 	github.com/klauspost/compress v1.17.5
 	github.com/minio/highwayhash v1.0.2
-	github.com/oklog/run v1.1.0
 	github.com/opencontainers/runtime-spec v1.1.0
 	github.com/parca-dev/parca v0.20.0
-	github.com/parca-dev/runtime-data v0.0.0-20231005134622-f7f398637613
-	github.com/planetscale/vtprotobuf v0.5.0
 	github.com/prometheus/client_golang v1.18.0
 	github.com/prometheus/common v0.46.0
 	github.com/prometheus/procfs v0.12.0
@@ -43,7 +36,6 @@ require (
 	github.com/zcalusic/sysinfo v1.0.2
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.47.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.47.0
-	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.47.0
 	go.opentelemetry.io/otel v1.22.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.22.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.22.0
@@ -52,7 +44,6 @@ require (
 	go.opentelemetry.io/otel/sdk v1.22.0
 	go.opentelemetry.io/otel/trace v1.22.0
 	go.uber.org/atomic v1.11.0
-	go.uber.org/automaxprocs v1.5.3
 	go.uber.org/goleak v1.3.0
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
 	golang.org/x/sync v0.6.0
@@ -109,7 +100,6 @@ require (
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/efficientgo/core v1.0.0-rc.2 // indirect
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
-	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-delve/delve v1.21.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
@@ -138,7 +128,6 @@ require (
 	github.com/ianlancetaylor/demangle v0.0.0-20230524184225-eabc099b10ab // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
@@ -155,7 +144,6 @@ require (
 	github.com/mozillazg/go-httpheader v0.4.0 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
 	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
 	github.com/nanmu42/limitio v1.0.0 // indirect
 	github.com/ncw/swift v1.0.53 // indirect
