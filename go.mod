@@ -1,6 +1,6 @@
 module github.com/parca-dev/parca-agent
 
-go 1.20
+go 1.21
 
 require (
 	buf.build/gen/go/prometheus/prometheus/protocolbuffers/go v1.32.0-20240125203449-c3402bbea49b.1
@@ -34,15 +34,15 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/xyproto/ainur v1.3.3
 	github.com/zcalusic/sysinfo v1.0.2
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.47.0
-	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.47.0
-	go.opentelemetry.io/otel v1.22.0
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.22.0
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.22.0
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.22.0
-	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.22.0
-	go.opentelemetry.io/otel/sdk v1.22.0
-	go.opentelemetry.io/otel/trace v1.22.0
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.46.0
+	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.46.0
+	go.opentelemetry.io/otel v1.21.0
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.21.0
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.21.0
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.21.0
+	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.21.0
+	go.opentelemetry.io/otel/sdk v1.21.0
+	go.opentelemetry.io/otel/trace v1.21.0
 	go.uber.org/atomic v1.11.0
 	go.uber.org/goleak v1.3.0
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
@@ -51,10 +51,10 @@ require (
 	google.golang.org/grpc v1.61.0
 	google.golang.org/protobuf v1.32.0
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/api v0.29.0
-	k8s.io/apimachinery v0.29.1
-	k8s.io/client-go v0.29.0
-	k8s.io/cri-api v0.29.1
+	k8s.io/api v0.28.4
+	k8s.io/apimachinery v0.28.4
+	k8s.io/client-go v0.28.4
+	k8s.io/cri-api v0.28.4
 )
 
 require (
@@ -144,7 +144,6 @@ require (
 	github.com/mozillazg/go-httpheader v0.4.0 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
 	github.com/nanmu42/limitio v1.0.0 // indirect
 	github.com/ncw/swift v1.0.53 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
@@ -168,7 +167,7 @@ require (
 	github.com/thanos-io/objstore v0.0.0-20231112185854-37752ee64d98 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.opentelemetry.io/otel/metric v1.22.0 // indirect
+	go.opentelemetry.io/otel/metric v1.21.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
 	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/mod v0.14.0 // indirect
